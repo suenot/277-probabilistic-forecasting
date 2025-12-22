@@ -1,0 +1,95 @@
+# Probabilistic Forecasting Configuration
+# ========================================
+
+# Data fetching settings
+data:
+  exchange: "bybit"
+  symbols:
+    - "BTC/USDT"
+    - "ETH/USDT"
+    - "SOL/USDT"
+  timeframe: "1h"
+  history_days: 90
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+
+# Feature engineering
+features:
+  return_periods: [1, 4, 12, 24, 168]  # hours
+  volatility_windows: [12, 24, 168]    # hours
+  technical_indicators:
+    - rsi_14
+    - macd
+    - bollinger_bands
+  include_volume: true
+  include_time_features: true
+
+# Model configuration
+model:
+  type: "quantile_regression"  # Options: quantile_regression, deepar, mixture_density
+
+  # Quantile regression settings
+  quantile_regression:
+    quantiles: [0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95]
+    hidden_size: 64
+    num_layers: 2
+    dropout: 0.1
+
+  # DeepAR settings
+  deepar:
+    hidden_size: 128
+    num_layers: 2
+    dropout: 0.1
+    distribution: "student_t"  # Options: gaussian, student_t, negative_binomial
+    num_samples: 100
+
+  # Mixture Density Network settings
+  mixture_density:
+    num_components: 3
+    hidden_size: 64
+    num_layers: 2
+
+# Training configuration
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  epochs: 100
+  early_stopping_patience: 10
+  sequence_length: 48  # hours of history
+  prediction_horizon: 4  # hours ahead
+
+# Scoring configuration
+scoring:
+  metrics:
+    - crps
+    - log_score
+    - calibration_error
+    - sharpness
+    - coverage_90
+    - coverage_50
+
+# Trading strategy
+strategy:
+  confidence_threshold: 0.60  # Minimum probability for signal
+  min_expected_return: 0.005  # Minimum expected return (0.5%)
+  kelly_fraction: 0.5  # Fraction of Kelly to use (half-Kelly)
+  max_position_size: 0.25  # Maximum 25% of portfolio
+  var_limit: 0.02  # Maximum VaR 95% of 2%
+  transaction_cost: 0.001  # 0.1% per trade
+
+# Backtesting
+backtest:
+  initial_capital: 10000
+  rebalance_frequency: "1h"
+  include_transaction_costs: true
+  include_slippage: true
+  slippage_bps: 5  # 5 basis points
+
+# Output settings
+output:
+  save_forecasts: true
+  save_model: true
+  plot_results: true
+  log_level: "INFO"

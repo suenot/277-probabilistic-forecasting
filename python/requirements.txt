@@ -1,0 +1,33 @@
+# Probabilistic Forecasting for Trading
+# Python dependencies
+
+# Data fetching
+ccxt>=4.0.0
+
+# Data manipulation
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Machine Learning
+scikit-learn>=1.3.0
+torch>=2.0.0
+
+# Probabilistic forecasting
+properscoring>=0.1
+
+# Statistics
+scipy>=1.11.0
+statsmodels>=0.14.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Configuration
+pyyaml>=6.0
+
+# Progress bars
+tqdm>=4.65.0
+
+# Type hints
+typing-extensions>=4.5.0
